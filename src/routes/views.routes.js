@@ -15,7 +15,7 @@ router.get('/register', isConnected, register)
 
 router.get('/login', isConnected, login)
 
-router.get('/current', isDisconnected, isUserPremiumOrAdmin, profile)
+router.get('/current', profile)
 
 router.get("/restorepass/:token", validateToken, (req, res) => {
     res.render('restorePass', { token: req.params.token });

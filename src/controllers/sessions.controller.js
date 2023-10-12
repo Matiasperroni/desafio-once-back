@@ -13,7 +13,7 @@ import {
 const transport = nodemailer.createTransport(mailingConfig);
 
 export const registerSession = async (req, res) => {
-    res.send({ status: "success", message: "User registered" });
+    res.status(200).send({ status: "success", message: "User registered" });
 };
 
 export const failedRegister = (req, res) => {
