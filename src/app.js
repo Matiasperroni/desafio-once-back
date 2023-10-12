@@ -19,7 +19,7 @@ import { ENVIRONMENT, addLogger, loggerInfo } from "./logger/logger.js";
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUIExpress from 'swagger-ui-express';
 
-// import cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 // Mongodb URL : "mongodb+srv://Matias-Perroni:fcKP3TXvcILtCNWu@cluster0.ymwavy3.mongodb.net/ecommerce?retryWrites=true&w=majority"
 
 dotenv.config();
@@ -53,6 +53,8 @@ app.use(
         saveUninitialized: false,
     })
 );
+
+app.use(cookieParser());
 
 initializePassport();
 app.use(passport.initialize());

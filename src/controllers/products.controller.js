@@ -95,6 +95,7 @@ export const mockingProducts = async (req, res) => {
 export const addProduct = async (req, res) => {
     //todo agregar una vista que permita agregar productos a un admin o premium y asi se agregue su email como owner directamente
     const product = req.body;
+    console.log(product);
     const addedProduct = await productRepository.addProduct(product);
     if (!addedProduct) {
         CustomError.createError({
@@ -104,7 +105,7 @@ export const addProduct = async (req, res) => {
             message: "Could not add product",
         });
     }
-    res.send({ status: "success" });
+    res.send({ status: "success", addedProduct });
 };
 
 export const updateProduct = async (req, res) => {

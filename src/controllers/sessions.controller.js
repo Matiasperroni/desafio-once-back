@@ -26,7 +26,6 @@ export const loginSession = async (req, res) => {
             .status(400)
             .send({ status: "error", error: "Incorrect credentials" });
     let user = new UserDTO(req.user);
-    console.log("usuario", user);
     req.session.user = user;
     res.send({
         status: "success",

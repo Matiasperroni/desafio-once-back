@@ -21,19 +21,14 @@ export const createHash = (password) =>
 export const validatePassword = (user, password) =>
     bcrypt.compareSync(password, user.password);
 
-// export const generateToken = (user) => {
-//     const token = jwt.sign({ user }, PRIVATE_KEY, {
-//         expiresIn: "1d",
-//     });
-//     return token;
-// };
+
 
 export const validateToken = (req, res, next) => {
-    const token = req.params.token;
+    const token = req.user;
     jwt.verify(token, PRIVATE_KEY)
     const data = jwt.decode(token)
-    console.log(data)
-    req.email = data.email
+    // console.log(data)
+    req.user = data.email
     next()
 }
 

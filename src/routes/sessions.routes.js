@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import cookieParser from 'cookie-parser';
 import { registerSession, failedRegister, loginSession, failedLogin, logout, githubCallback, sendEmail, changePassword, getCartFromUser } from '../controllers/sessions.controller.js';
 import { validateToken } from '../utils.js';
 
@@ -16,7 +17,8 @@ router.get("/failregister", failedRegister);
 
 router.post(
     "/login",
-    passport.authenticate("login", { failureRedirect: "/sessions/faillogin" }),
+    passport.authenticate("login", { session: false, failureRedirect: "/sessions/faillogin" }),
+    validateToken,
     loginSession
 );
 

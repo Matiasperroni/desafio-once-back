@@ -1,14 +1,53 @@
 import passport from "passport";
 import local from "passport-local";
+
 import userModel from "../dao/models/users.schema.js";
-import CartManagerDB from '../dao/mongo/carts.manager.js';
-import { createHash, validatePassword } from "../utils.js";
+import CartManagerDB from "../dao/mongo/carts.manager.js";
+
+import jwt from 'passport-jwt';
+import {
+    createHash,
+    validatePassword,
+    generateToken,
+    PRIVATE_KEY,
+} from "../utils.js";
 import GitHubStrategy from "passport-github2";
+
 const cartManager = new CartManagerDB();
 // let url = "http://http://localhost:8080/sessions/githubcallback"
 
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 const LocalStrategy = local.Strategy;
+
+const cookieExtractor = (req) => {
+    let token;
+    if (req && req.cookies) {
+        return (token = req?.cookies["login-cookie"]);
+    }
+    return token;
+};
+
+
+
 const initializePassport = () => {
+    passport.use(
+        "current",
+        new JWTStrategy(
+            {
+                jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+                secretOrKey: PRIVATE_KEY,
+            },
+            async (jwt_payload, done) => {
+                try {
+                    return done(null, jwt_payload);
+                } catch (error) {
+                    done(error);
+                }
+            }
+        )
+    );
+
     passport.use(
         "register",
         new LocalStrategy(
@@ -17,8 +56,7 @@ const initializePassport = () => {
                 passReqToCallback: true,
             },
             async (req, username, password, done) => {
-                const cart = await cartManager.createNewCart()
-                // console.log("soy cart", cart);
+                const cart = await cartManager.createNewCart();
                 const { first_name, last_name, email, age } = req.body;
                 try {
                     let user = await userModel.findOne({ email: username });
@@ -29,7 +67,7 @@ const initializePassport = () => {
                         email,
                         age,
                         password: createHash(password),
-                        cart
+                        cart,
                     };
                     user = await userModel.create(newUser);
                     return done(null, user);
@@ -46,13 +84,19 @@ const initializePassport = () => {
             { usernameField: "email" },
             async (username, password, done) => {
                 try {
-                    const user = await userModel.findOne({ email: username })
-                    console.log(user, "veremos");//.populate("Carts", userService) //aca!!!;
-                    if (!user)
-                        return done(null, false, { message: "User not found" });
-                    if (!validatePassword(user, password))
-                        return done(null, false);
-                    return done(null, user);
+                    const user = await userModel.findOne({ email: username });
+                    //console.log(user, "veremos"); //.populate("Carts", userService) //aca!!!;
+                    if (!user){
+                    console.log("no paso", user);
+                        return done(null, false, { message: "User not found" });}
+                    if (!validatePassword(user, password)) {
+                        {
+                        //console.log("no pw", user);
+                        return done(null, false);}
+                    }
+                    const jwt = generateToken(user);
+                    // console.log(jwt, "veremos");
+                    return done(null, jwt);
                 } catch (error) {
                     return done({ message: "Error logging in" });
                 }
@@ -66,8 +110,7 @@ const initializePassport = () => {
             {
                 clientID: "Iv1.827f68d0ed74f990",
                 clientSecret: "5df96c88fe5ab66b92926813503665418c942c0e",
-                callbackURL:
-                    "http://localhost:8080/sessions/githubcallback",
+                callbackURL: "http://localhost:8080/sessions/githubcallback",
             },
             async (accessToken, refreshToken, profile, done) => {
                 try {
@@ -87,13 +130,14 @@ const initializePassport = () => {
                     user = userModel.create(newUser);
                     return done(null, false);
                 } catch (error) {
-                    return done({message: "Error creating user."});
+                    return done({ message: "Error creating user." });
                 }
             }
         )
     );
 
     passport.serializeUser((user, done) => {
+        // console.log("antes de serialize", user);
         done(null, user._id);
     });
 
@@ -106,5 +150,7 @@ const initializePassport = () => {
         }
     });
 };
+
+
 
 export default initializePassport;

@@ -19,7 +19,8 @@ export const isAdminOrPremium = (req, res, next) => {
 
 export const isUserPremiumOrAdmin = (req, res, next) => {
     const user = req.session.user;
-    // console.log("soy el user del middleware", req.cookie);
+    console.log("soy el user del middleware", user);
+    if(!user) res.redirect("/login")
     if (
         user?.role === "Admin" ||
         user?.role === "Premium" ||
