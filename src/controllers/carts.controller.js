@@ -98,7 +98,7 @@ export const addProductToCart = async (req, res) => {
             cartID,
             prodID
         );
-        res.send(productAddedToCart);
+        res.status(200).send(productAddedToCart);
     } catch (error) {
         req.logger.error(
             `Server error adding product to cart${error}`
@@ -152,13 +152,11 @@ export const deleteCart = async (req, res) => {
             message: "Error creating cart.",
         });
     }
-    console.log(deletedCart);
     res.send(deletedCart);
 };
 
 export const finishPurchase = async (req, res) => {
     try {
-        console.log("reqsessionuser", req?.session?.user);
         const user = req?.session?.user;
         const cartID = req.params.cid;
         const cart = await cartRepository.purchase(cartID, user.email);
@@ -171,7 +169,7 @@ export const finishPurchase = async (req, res) => {
             res.status(500).send("error: error trying to purchase.");
         }
     } catch (error) {
-        req.logger.error(`Interval server error finishing purchase ${error}`);
+        req.logger.error(`Server error finishing purchase ${error}`);
         res.status(500).send("Error purchasing.");
     }
 };

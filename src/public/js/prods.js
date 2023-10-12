@@ -3,25 +3,20 @@ const addEvents = () => {
     addToCartButtons.forEach((button) => {
         button.addEventListener("click", addToCart);
     });
+    const logoutButton = document.querySelector(".logout")
+    logoutButton.addEventListener("click", logout)
 };
 let cartID = "";
-const giveCart = () => {
+const giveCart = async () => {
     cartID = localStorage.getItem("cartId");
     console.log("soy el guardado del ls", cartID);
     if (!cartID) {
-        fetch("/api/carts", {
-            method: "POST",
+        const response = await fetch("/sessions/getusercart", {
+            method: "GET",
         })
-            .then((response) => response.json())
-            .then((data) => {
-                cartID = data._id;
-                console.log("soy cart id", cartID);
-                localStorage.setItem("cartId", cartID);
-            })
-            .catch((error) => {
-                console.error("Error al crear un nuevo carrito:", error);
-                return;
-            });
+        const result = await response.json()
+        cartID = result.cart;
+        localStorage.setItem("cartId", cartID);
     }
 };
 // window.addEventListener("load", giveCart)
@@ -39,6 +34,11 @@ const addToCart = async (e) => {
     const result = await response.json();
     console.log(result);
 };
+
+const logout = async() => {
+    localStorage.clear()
+    window.location.replace("/sessions/logout")
+}
 
 window.addEventListener("load", () => {
     addEvents();

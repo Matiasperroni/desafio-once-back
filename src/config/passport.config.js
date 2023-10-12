@@ -31,7 +31,6 @@ const initializePassport = () => {
                         password: createHash(password),
                         cart
                     };
-                    console.log("soy new user",newUser);
                     user = await userModel.create(newUser);
                     return done(null, user);
                 } catch (error) {
@@ -47,7 +46,8 @@ const initializePassport = () => {
             { usernameField: "email" },
             async (username, password, done) => {
                 try {
-                    const user = await userModel.findOne({ email: username })//.populate("Carts", userService) //aca!!!;
+                    const user = await userModel.findOne({ email: username })
+                    console.log(user, "veremos");//.populate("Carts", userService) //aca!!!;
                     if (!user)
                         return done(null, false, { message: "User not found" });
                     if (!validatePassword(user, password))

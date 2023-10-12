@@ -10,7 +10,6 @@ export const isDisconnected = (req, res, next) => {
 
 export const isAdminOrPremium = (req, res, next) => {
     const user = req.session.user;
-    console.log(user, "a verrrr");
     if (user.role === "Admin" || user.role === "Premium") {
         next();
     } else {
@@ -20,10 +19,11 @@ export const isAdminOrPremium = (req, res, next) => {
 
 export const isUserPremiumOrAdmin = (req, res, next) => {
     const user = req.session.user;
+    // console.log("soy el user del middleware", req.cookie);
     if (
-        user.role === "Admin" ||
-        user.role === "Premium" ||
-        user.role === "User"
+        user?.role === "Admin" ||
+        user?.role === "Premium" ||
+        user?.role === "User"
     ) {
         next();
     } else {

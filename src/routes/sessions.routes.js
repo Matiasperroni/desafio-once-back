@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import { registerSession, failedRegister, loginSession, failedLogin, logout, githubCallback, sendEmail, changePassword } from '../controllers/sessions.controller.js';
+import { registerSession, failedRegister, loginSession, failedLogin, logout, githubCallback, sendEmail, changePassword, getCartFromUser } from '../controllers/sessions.controller.js';
 import { validateToken } from '../utils.js';
 
 const router = Router();
@@ -27,6 +27,8 @@ router.get("/logout", logout)
 router.get("/github", passport.authenticate("github", {scope: ["user:email"]}), async(req, res) => {
 
 })
+
+router.get("/getusercart", getCartFromUser)
 
 
 router.get("/githubcallback", passport.authenticate("github", {failureRedirect: "/login"}), githubCallback)

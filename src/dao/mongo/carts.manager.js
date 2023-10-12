@@ -60,7 +60,7 @@ class CartManagerDB {
             }
 
             await cart.save();
-            return true;
+            return cart;
         } catch (error) {
             throw new Error("Could not add products to cart: " + error);
         }

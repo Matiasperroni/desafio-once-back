@@ -46,7 +46,7 @@ export const getProducts = async (req, res) => {
             user: req.session.user,
         });
     } catch (error) {
-        req.logger.error(`Interval server error getting products ${error}`);
+        req.logger.error(`Server error getting products ${error}`);
         res.status(500).send("Error");
     }
 };
@@ -66,7 +66,7 @@ export const getProductById = async (req, res) => {
         res.send(pFound);
     } catch (error) {
         req.logger.error(
-            `Interval server error getting products by id ${error}`
+            `Server error getting products by id ${error}`
         );
         res.status(500).send("Error");
     }
@@ -147,7 +147,7 @@ export const deleteProduct = async (req, res) => {
         }
         res.send(prodToDelete);
     } catch (error) {
-        req.logger.error(`Interval server error deleting products ${error}`);
+        req.logger.error(`Server error deleting products ${error}`);
         res.status(500).send("Error getting data.");
     }
 };

@@ -6,5 +6,6 @@ export default class UserDTO {
         this.age = user.age;
         this.githubProfile = user.githubProfile;
         this.role = user.role;
+        this.cart = user.cart;
     }
 }
